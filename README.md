@@ -17,3 +17,21 @@ RDS_USERNAME=
 RDS_PASSWORD=
 RDS_DB_NAME=
 ```
+
+## Checking RDS Connection from SageMaker Notebook
+
+```sh
+dig +short txt ch whoami.cloudflare @1.0.0.1
+
+curl -v ******.******.us-east-1.rds.amazonaws.com:5432
+```
+
+## Notebook Formatting
+
+Using `jupyter-black` for formatting notebooks.
+
+```sh
+pip install "black[jupyter]"
+
+black *.ipynb
+```
