@@ -1,34 +1,36 @@
-# Performing NLQ on Amazon RDS using Amazon SageMaker, LangChain, and LLMs
+# Performing Natural Language Queries (NLQ) on Amazon RDS using Amazon SageMaker, LangChain, and LLMs
 
-Source code for the upcoming blog post, [Perform Natural Language Queries of Amazon RDS using Amazon SageMaker, LangChain, and LLMs](#). Learn to use LangChain's SQL Database Chain and Agent with various LLMs to perform Natural Language Queries (NLQ) of an Amazon RDS for PostgreSQL database.
+Source code for the upcoming blog post, [Performing Natural Language Queries (NLQ) on Amazon RDS using Amazon SageMaker, LangChain, and LLMs](#). Learn to use LangChain's SQL Database Chain and Agent with various LLMs to perform Natural Language Queries (NLQ) of Amazon RDS for PostgreSQL.
 
-## dotenv
+## Using dotenv
 
 Your `.env` files should look as follows:
 
 ```ini
 # API Keys
-OPENAI_API_KEY=
+OPENAI_API_KEY=<your_value_here>
 
 # RDS Connection 
-RDS_ENDPOINT=
-RDS_PORT=
-RDS_USERNAME=
-RDS_PASSWORD=
-RDS_DB_NAME=
+RDS_ENDPOINT=<your_value_here>
+RDS_PORT=<your_value_here>
+RDS_USERNAME=<your_value_here>
+RDS_PASSWORD=<your_value_here>
+RDS_DB_NAME=<your_value_here>
 ```
 
 ## Checking RDS Connection from SageMaker Notebook
 
 ```sh
+# Get your SageMaker Notebook environment IP
 dig +short txt ch whoami.cloudflare @1.0.0.1
 
+# CuRL RDS database instance to check connectivity
 curl -v ******.******.us-east-1.rds.amazonaws.com:5432
 ```
 
 ## Notebook Formatting
 
-Using `jupyter-black` for formatting notebooks.
+I am using `jupyter-black` for formatting notebooks.
 
 ```sh
 pip install "black[jupyter]"
