@@ -1,6 +1,6 @@
 # Performing Natural Language Queries (NLQ) on Amazon RDS using Amazon SageMaker, LangChain, and LLMs
 
-Source code for the upcoming blog post, [Performing Natural Language Queries (NLQ) on Amazon RDS using Amazon SageMaker, LangChain, and LLMs](#). Learn to use LangChain's SQL Database Chain and Agent with various LLMs to perform Natural Language Queries (NLQ) of Amazon RDS for PostgreSQL.
+Source code for the upcoming blog post, [Performing Natural Language Queries (NLQ) on Amazon RDS using Amazon SageMaker, LangChain, and LLMs](#). Learn to use LangChain's SQL Database Chain and Agent with large language models to perform natural language queries (NLQ) of Amazon RDS for PostgreSQL.
 
 ## Using dotenv
 
