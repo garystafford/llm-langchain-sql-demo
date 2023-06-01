@@ -30,10 +30,14 @@ curl -v ******.******.us-east-1.rds.amazonaws.com:5432
 
 ## Notebook Formatting
 
-I am using `jupyter-black` for formatting notebooks.
+`jupyter-black` was used to format notebooks.
 
 ```sh
 pip install "black[jupyter]"
 
 black *.ipynb
 ```
+
+---
+
+_The contents of this repository represent my viewpoints and not of my past or current employers, including Amazon Web Services (AWS). All third-party libraries, modules, plugins, and SDKs are the property of their respective owners._
