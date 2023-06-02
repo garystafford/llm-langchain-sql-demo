@@ -4,13 +4,10 @@
   sql_result: '[(11,)]'
   table_info: |
     CREATE TABLE d_category (
-        catid smallint NOT NULL ENCODE raw distkey,
-        catgroup character varying(10) ENCODE lzo,
-        catname character varying(10) ENCODE lzo,
-        catdesc character varying(50) ENCODE lzo
-    ) DISTSTYLE KEY
-    SORTKEY
-        (catid);
+        catid smallint NOT NULL,
+        catgroup character varying(10),
+        catname character varying(10),
+        catdesc character varying(50));
 
     /*
     3 rows from d_category table:
@@ -31,18 +28,15 @@
   sql_result: '[(12293,)]'
   table_info: |
     CREATE TABLE d_date (
-        dateid smallint NOT NULL ENCODE raw distkey,
-        caldate date NOT NULL ENCODE az64,
-        day smallint NOT NULL ENCODE az64,
-        month smallint NOT NULL ENCODE az64,
-        year smallint NOT NULL ENCODE az64,
-        week smallint NOT NULL ENCODE az64,
-        qtr smallint NOT NULL ENCODE az64,
-        holiday boolean DEFAULT false ENCODE raw,
-        PRIMARY KEY (dateid)
-    ) DISTSTYLE KEY
-    SORTKEY
-        (dateid);
+        dateid smallint NOT NULL,
+        caldate date NOT NULL,
+        day smallint NOT NULL,
+        month smallint NOT NULL,
+        year smallint NOT NULL,
+        week smallint NOT NULL,
+        qtr smallint NOT NULL,
+        holiday boolean DEFAULT false,
+        PRIMARY KEY (dateid));
 
     /*
     3 rows from d_date table:
@@ -53,19 +47,16 @@
     */
     
     CREATE TABLE f_sales (
-        salesid integer ENCODE az64,
-        listid integer ENCODE az64 distkey,
-        sellerid integer ENCODE az64,
-        buyerid integer ENCODE az64,
-        eventid integer ENCODE az64,
-        dateid smallint ENCODE raw,
-        qtysold smallint ENCODE az64,
-        pricepaid numeric(8, 2) ENCODE az64,
-        commission numeric(8, 2) ENCODE az64,
-        saletime timestamp without time zone ENCODE az64
-    ) DISTSTYLE AUTO
-    SORTKEY
-        (dateid);
+        salesid integer,
+        listid integer,
+        sellerid integer,
+        buyerid integer,
+        eventid integer,
+        dateid smallint,
+        qtysold smallint,
+        pricepaid numeric(8, 2),
+        commission numeric(8, 2),
+        saletime timestamp without time zone);
 
     3 rows from f_sales table:
     salesid	listid	sellerid	buyerid	eventid	dateid	qtysold	pricepaid	commission	saletime
@@ -85,19 +76,16 @@
   sql_result: '[(8933, 67), (1298, 64), (3797, 64), (5002, 63), (4842, 60), (5953, 60), (4064, 60), (644, 60), (3881, 60), (522, 60)]'
   table_info: |
     CREATE TABLE f_sales (
-        salesid integer ENCODE az64,
-        listid integer ENCODE az64 distkey,
-        sellerid integer ENCODE az64,
-        buyerid integer ENCODE az64,
-        eventid integer ENCODE az64,
-        dateid smallint ENCODE raw,
-        qtysold smallint ENCODE az64,
-        pricepaid numeric(8, 2) ENCODE az64,
-        commission numeric(8, 2) ENCODE az64,
-        saletime timestamp without time zone ENCODE az64
-    ) DISTSTYLE AUTO
-    SORTKEY
-        (dateid);
+        salesid integer,
+        listid integer,
+        sellerid integer,
+        buyerid integer,
+        eventid integer,
+        dateid smallint,
+        qtysold smallint,
+        pricepaid numeric(8, 2),
+        commission numeric(8, 2),
+        saletime timestamp without time zone);
 
     3 rows from f_sales table:
     salesid	listid	sellerid	buyerid	eventid	dateid	qtysold	pricepaid	commission	saletime
@@ -118,19 +106,16 @@
   sql_result: "[('Mamma Mia!', Decimal('1135454.00')), ('Spring Awakening', Decimal('972855.00')), ('The Country Girl', Decimal('910563.00'))]"
   table_info: |
     CREATE TABLE f_sales (
-        salesid integer ENCODE az64,
-        listid integer ENCODE az64 distkey,
-        sellerid integer ENCODE az64,
-        buyerid integer ENCODE az64,
-        eventid integer ENCODE az64,
-        dateid smallint ENCODE raw,
-        qtysold smallint ENCODE az64,
-        pricepaid numeric(8, 2) ENCODE az64,
-        commission numeric(8, 2) ENCODE az64,
-        saletime timestamp without time zone ENCODE az64
-    ) DISTSTYLE AUTO
-    SORTKEY
-        (dateid);
+        salesid integer,
+        listid integer,
+        sellerid integer,
+        buyerid integer,
+        eventid integer,
+        dateid smallint,
+        qtysold smallint,
+        pricepaid numeric(8, 2),
+        commission numeric(8, 2),
+        saletime timestamp without time zone);
 
     3 rows from f_sales table:
     salesid	listid	sellerid	buyerid	eventid	dateid	qtysold	pricepaid	commission	saletime
@@ -140,19 +125,16 @@
     */
     
     CREATE TABLE d_event (
-        eventid integer NOT NULL ENCODE az64 distkey,
-        venueid smallint NOT NULL ENCODE az64,
-        catid smallint NOT NULL ENCODE az64,
-        dateid smallint NOT NULL ENCODE raw,
-        eventname character varying(200) ENCODE lzo,
-        starttime timestamp without time zone ENCODE az64,
+        eventid integer NOT NULL,
+        venueid smallint NOT NULL,
+        catid smallint NOT NULL,
+        dateid smallint NOT NULL,
+        eventname character varying(200),
+        starttime timestamp without time zone,
         PRIMARY KEY (eventid),
         FOREIGN KEY (venueid) REFERENCES d_venue(venueid),
         FOREIGN KEY (catid) REFERENCES d_category(catid),
-        FOREIGN KEY (dateid) REFERENCES d_date(dateid)
-    ) DISTSTYLE KEY
-    SORTKEY
-        (dateid);
+        FOREIGN KEY (dateid) REFERENCES d_date(dateid));
 
     /*
     3 rows from d_event table:
@@ -174,19 +156,16 @@
   sql_result: "[(1140, Decimal('32399.00')), (43551, Decimal('31365.00')), (13385, Decimal('28495.00')), (25433, Decimal('27653.00')), (2372, Decimal('27159.00'))]"
   table_info: |
     CREATE TABLE f_sales (
-        salesid integer ENCODE az64,
-        listid integer ENCODE az64 distkey,
-        sellerid integer ENCODE az64,
-        buyerid integer ENCODE az64,
-        eventid integer ENCODE az64,
-        dateid smallint ENCODE raw,
-        qtysold smallint ENCODE az64,
-        pricepaid numeric(8, 2) ENCODE az64,
-        commission numeric(8, 2) ENCODE az64,
-        saletime timestamp without time zone ENCODE az64
-    ) DISTSTYLE AUTO
-    SORTKEY
-        (dateid);
+        salesid integer,
+        listid integer,
+        sellerid integer,
+        buyerid integer,
+        eventid integer,
+        dateid smallint,
+        qtysold smallint,
+        pricepaid numeric(8, 2),
+        commission numeric(8, 2),
+        saletime timestamp without time zone);
 
     3 rows from f_sales table:
     salesid	listid	sellerid	buyerid	eventid	dateid	qtysold	pricepaid	commission	saletime
@@ -207,19 +186,16 @@
   sql_result: "[(217, 'Hilton Theatre', 81)]"
   table_info: |
     CREATE TABLE d_event (
-        eventid integer NOT NULL ENCODE az64 distkey,
-        venueid smallint NOT NULL ENCODE az64,
-        catid smallint NOT NULL ENCODE az64,
-        dateid smallint NOT NULL ENCODE raw,
-        eventname character varying(200) ENCODE lzo,
-        starttime timestamp without time zone ENCODE az64,
+        eventid integer NOT NULL,
+        venueid smallint NOT NULL,
+        catid smallint NOT NULL,
+        dateid smallint NOT NULL,
+        eventname character varying(200),
+        starttime timestamp without time zone,
         PRIMARY KEY (eventid),
         FOREIGN KEY (venueid) REFERENCES d_venue(venueid),
         FOREIGN KEY (catid) REFERENCES d_category(catid),
-        FOREIGN KEY (dateid) REFERENCES d_date(dateid)
-    ) DISTSTYLE KEY
-    SORTKEY
-        (dateid);
+        FOREIGN KEY (dateid) REFERENCES d_date(dateid));
 
     /*
     3 rows from d_event table:
@@ -230,14 +206,11 @@
     */
 
     CREATE TABLE d_venue (
-            venueid smallint ENCODE raw distkey,
-            venuename character varying(100) ENCODE lzo,
-            venuecity character varying(30) ENCODE lzo,
-            venuestate character(2) ENCODE lzo,
-            venueseats integer ENCODE az64
-    ) DISTSTYLE AUTO
-    SORTKEY
-        (venueid);
+        venueid smallint,
+        venuename character varying(100),
+        venuecity character varying(30),
+        venuestate character(2),
+        venueseats integer);
 
     /*
     3 rows from d_user table:
