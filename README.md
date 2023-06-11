@@ -30,6 +30,9 @@ REDSHIFT_DATABASE=<your_value_here>
 ## Checking RDS Connection from SageMaker Notebook
 
 ```sh
+# Amazon SageMaker terminal
+yum install bind-utils -y
+
 # Get your SageMaker Notebook environment IP
 dig +short txt ch whoami.cloudflare @1.0.0.1
 
