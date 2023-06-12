@@ -9,8 +9,12 @@ Source code for the upcoming blog post, [Generative AI for Analytics: Performing
 Your `.env` files should look as follows:
 
 ```ini
+# add required values, then rename this file to .env
+# mv env.txt .env
+
 # API Keys
 OPENAI_API_KEY=<your_value_here>
+ANTHROPIC_API_KEY=<your_value_here>
 
 # Demo 1: Amazon RDS Connection 
 RDS_ENDPOINT=<your_value_here>
