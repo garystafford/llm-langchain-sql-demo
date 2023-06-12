@@ -4,6 +4,13 @@ Source code for the upcoming blog post, [Generative AI for Analytics: Performing
 
 ![Architecture](LangChainSQL.png)
 
+## Amazon SageMaker Environment
+
+Kernel: Python 3 (Data Science 3.0)  
+
+Instance type: ml.m5.large
+
+
 ## Using dotenv
 
 Your `.env` files should look as follows:
