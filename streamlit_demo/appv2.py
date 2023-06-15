@@ -3,13 +3,15 @@
 # Date: 2023-06-14
 # License: MIT
 
+# sudo yum update -y && sudo yum install gcc gcc-c++ make
 # python3 -m pip install SQLAlchemy==1.4.48 -q # older version required for sqlalchemy-redshift
 # python3 -m pip install langchain openai sqlalchemy-redshift -Uq
 # python3 -m pip install streamlit streamlit-chat psycopg2-binary chromadb python-dotenv -Uq
 # python3 -m pip install pyyaml -q
 # python3 -m pip install sentence-transformers -Uq --no-cache-dir #--force-reinstall
+# pip list | grep "langchain\|openai\|sentence-transformers\|SQLAlchemy"
 
-# streamlit run appn2.py --server.runOnSave true
+# streamlit run appv2.py --server.runOnSave true
 
 import os
 
