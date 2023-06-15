@@ -1,13 +1,15 @@
 # Natural Language Query Demo of Amazon Redshift using Streamlit and OpenAI
 # Author: Gary A. Stafford
 # Date: 2023-06-09
-# License: MIT  
+# License: MIT
 
+# sudo yum update -y && sudo yum install gcc gcc-c++ make
 # python3 -m pip install SQLAlchemy==1.4.48 -q # older version required for sqlalchemy-redshift
 # python3 -m pip install langchain openai sqlalchemy-redshift -Uq
 # python3 -m pip install streamlit streamlit-chat psycopg2-binary chromadb python-dotenv -Uq
 # python3 -m pip install pyyaml -q
 # python3 -m pip install sentence-transformers -Uq --no-cache-dir #--force-reinstall
+# pip list | grep "langchain\|openai\|sentence-transformers\|SQLAlchemy"
 
 # streamlit run app.py --server.runOnSave true
 
@@ -15,16 +17,20 @@ import os
 
 import yaml
 from dotenv import load_dotenv
-from langchain import (FewShotPromptTemplate, PromptTemplate, SQLDatabase,
-                       SQLDatabaseChain)
+from langchain import (
+    FewShotPromptTemplate,
+    PromptTemplate,
+    SQLDatabase,
+    SQLDatabaseChain,
+)
 from langchain.chains import SQLDatabaseSequentialChain
-from langchain.chains.sql_database.prompt import (PROMPT_SUFFIX,
-                                                  _postgres_prompt)
+from langchain.chains.sql_database.prompt import PROMPT_SUFFIX, _postgres_prompt
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.llms import OpenAI
-from langchain.prompts.example_selector.semantic_similarity import \
-    SemanticSimilarityExampleSelector
+from langchain.prompts.example_selector.semantic_similarity import (
+    SemanticSimilarityExampleSelector,
+)
 from langchain.vectorstores import Chroma
 from streamlit_chat import message
 
