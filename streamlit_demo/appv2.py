@@ -81,8 +81,9 @@ def main():
             Which venue hosted the most events?
             How many unique customers made a purchase in May 2022?
             What were the total sales in September 2022?
-            What are the largest 3 events based on all time sales?
-            Who are the top 5 seller names, based on all time sales?
+            What are the largest 3 events based on all time sales? How many tickets were sold to those events?
+            Who are the top 5 seller, based on all time sales?
+            Who are the top 3 seller, by names, based on all time sales? What were their sales?
             What ingredients are in a chocolate cake?
             Who is the current leader of Canada?
             """
