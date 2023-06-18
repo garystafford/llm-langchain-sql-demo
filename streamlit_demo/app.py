@@ -1,7 +1,8 @@
-# Natural Language Query (NLQ) Demo of Amazon Redshift using OpenAI's LLMs, LangChain, and Streamlit.
+# Natural Language Query Demo of Amazon Redshift using Streamlit and OpenAI
 # Author: Gary A. Stafford
 # Date: 2023-06-14
 # License: MIT
+# Usage: streamlit run app.py --server.runOnSave true
 
 import os
 
@@ -50,6 +51,18 @@ def main():
         st.session_state.visibility = "visible"
         st.session_state.disabled = False
 
+    if "generated" not in st.session_state:
+        st.session_state["generated"] = []
+
+    if "past" not in st.session_state:
+        st.session_state["past"] = []
+
+    if "query" not in st.session_state:
+        st.session_state["query"] = []
+
+    if "query_text" not in st.session_state:
+        st.session_state["query_text"] = []
+
     # hide streamlit default features
     # hide_menu_style = """
     #     <style>
@@ -67,18 +80,6 @@ def main():
 
     # build the main app ui
     build_form(col1, col2)
-
-    if "generated" not in st.session_state:
-        st.session_state["generated"] = []
-
-    if "past" not in st.session_state:
-        st.session_state["past"] = []
-
-    if "query" not in st.session_state:
-        st.session_state["query"] = []
-
-    if "query_text" not in st.session_state:
-        st.session_state["query_text"] = []
 
     # get the users query
     get_text(col1)
