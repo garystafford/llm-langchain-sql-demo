@@ -17,13 +17,13 @@
     5	Sports	MLS	Major League Soccer	
     */
 
-- answer: 12293 customers made a purchase in May 2008.
+- answer: 12293 customers made a purchase in May 2022.
   input: How many customers made a purchase in the month of May?
   sql_cmd: |
     SELECT COUNT(DISTINCT buyerid) 
     FROM f_sales 
     JOIN d_date ON f_sales.dateid = d_date.dateid 
-    WHERE month = 5 AND year = 2008 
+    WHERE month = 5 AND year = 2022 
     AND buyerid IS NOT NULL;
   sql_result: '[(12293,)]'
   table_info: |
@@ -41,9 +41,9 @@
     /*
     3 rows from d_date table:
     dateid	caldate	day	month	year	week	qtr	holiday
-    1827	2008-01-01	1	1	2008	1	1	true	
-    1831	2008-01-05	5	1	2008	2	1	false	
-    1836	2008-01-10	10	1	2008	2	1	false	
+    1827	2022-01-01	1	1	2022	1	1	true	
+    1831	2022-01-05	5	1	2022	2	1	false	
+    1836	2022-01-10	10	1	2022	2	1	false	
     */
     
     CREATE TABLE f_sales (
@@ -60,9 +60,9 @@
 
     3 rows from f_sales table:
     salesid	listid	sellerid	buyerid	eventid	dateid	qtysold	pricepaid	commission	saletime
-    33095	36572	30047	660	2903	1827	2	234	35.1	2008-01-01 09:41:06	
-    88268	100813	45818	698	8649	1827	4	836	125.4	2008-01-01 07:26:20	
-    110917	127048	37631	116	1749	1827	1	337	50.55	2008-01-01 07:05:02	
+    33095	36572	30047	660	2903	1827	2	234	35.1	2022-01-01 09:41:06	
+    88268	100813	45818	698	8649	1827	4	836	125.4	2022-01-01 07:26:20	
+    110917	127048	37631	116	1749	1827	1	337	50.55	2022-01-01 07:05:02	
     */
 
 - answer: The top 10 buyers based on number of tickets are 8933, 1298, 3797, 5002, 4842, 5953, 4064, 644, 3881, and 522.
@@ -89,9 +89,9 @@
 
     3 rows from f_sales table:
     salesid	listid	sellerid	buyerid	eventid	dateid	qtysold	pricepaid	commission	saletime
-    33095	36572	30047	660	2903	1827	2	234	35.1	2008-01-01 09:41:06	
-    88268	100813	45818	698	8649	1827	4	836	125.4	2008-01-01 07:26:20	
-    110917	127048	37631	116	1749	1827	1	337	50.55	2008-01-01 07:05:02	
+    33095	36572	30047	660	2903	1827	2	234	35.1	2022-01-01 09:41:06	
+    88268	100813	45818	698	8649	1827	4	836	125.4	2022-01-01 07:26:20	
+    110917	127048	37631	116	1749	1827	1	337	50.55	2022-01-01 07:05:02	
     */
 
 - answer: The top 3 events in terms of all time gross sales are Mamma Mia!, Spring Awakening, and The Country Girl.
@@ -119,9 +119,9 @@
 
     3 rows from f_sales table:
     salesid	listid	sellerid	buyerid	eventid	dateid	qtysold	pricepaid	commission	saletime
-    33095	36572	30047	660	2903	1827	2	234	35.1	2008-01-01 09:41:06	
-    88268	100813	45818	698	8649	1827	4	836	125.4	2008-01-01 07:26:20	
-    110917	127048	37631	116	1749	1827	1	337	50.55	2008-01-01 07:05:02	
+    33095	36572	30047	660	2903	1827	2	234	35.1	2022-01-01 09:41:06	
+    88268	100813	45818	698	8649	1827	4	836	125.4	2022-01-01 07:26:20	
+    110917	127048	37631	116	1749	1827	1	337	50.55	2022-01-01 07:05:02	
     */
     
     CREATE TABLE d_event (
@@ -139,9 +139,9 @@
     /*
     3 rows from d_event table:
     eventid	venueid	catid	dateid	eventname	starttime
-    1217	238	6	1827	Mamma Mia!	2008-01-01 20:00:00	
-    1433	248	6	1827	Grease	2008-01-01 19:00:00	
-    2811	207	7	1827	Spring Awakening	2008-01-01 15:00:00	
+    1217	238	6	1827	Mamma Mia!	2022-01-01 20:00:00	
+    1433	248	6	1827	Grease	2022-01-01 19:00:00	
+    2811	207	7	1827	Spring Awakening	2022-01-01 15:00:00	
     */
 
 - answer: The top 5 sellers based on all time gross sales are 1140, 43551, 13385, 25433, and 2372.
@@ -169,9 +169,9 @@
 
     3 rows from f_sales table:
     salesid	listid	sellerid	buyerid	eventid	dateid	qtysold	pricepaid	commission	saletime
-    33095	36572	30047	660	2903	1827	2	234	35.1	2008-01-01 09:41:06	
-    88268	100813	45818	698	8649	1827	4	836	125.4	2008-01-01 07:26:20	
-    110917	127048	37631	116	1749	1827	1	337	50.55	2008-01-01 07:05:02	
+    33095	36572	30047	660	2903	1827	2	234	35.1	2022-01-01 09:41:06	
+    88268	100813	45818	698	8649	1827	4	836	125.4	2022-01-01 07:26:20	
+    110917	127048	37631	116	1749	1827	1	337	50.55	2022-01-01 07:05:02	
     */
 
 - answer: The top 5 sellers based on all time gross sales are 1140, 43551, 13385, 25433, and 2372.
@@ -200,9 +200,9 @@
     /*
     3 rows from d_event table:
     eventid	venueid	catid	dateid	eventname	starttime
-    1217	238	6	1827	Mamma Mia!	2008-01-01 20:00:00	
-    1433	248	6	1827	Grease	2008-01-01 19:00:00	
-    2811	207	7	1827	Spring Awakening	2008-01-01 15:00:00	
+    1217	238	6	1827	Mamma Mia!	2022-01-01 20:00:00	
+    1433	248	6	1827	Grease	2022-01-01 19:00:00	
+    2811	207	7	1827	Spring Awakening	2022-01-01 15:00:00	
     */
 
     CREATE TABLE d_venue (
