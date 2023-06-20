@@ -6,9 +6,9 @@ Source code for the upcoming blog post, [Generative AI for Analytics: Performing
 
 ## Amazon SageMaker Environment
 
-Kernel: Python 3 (Data Science 3.0)  
+Kernel: Base Python 3.0 (Python 3)
 
-Instance type: ml.m5.large
+Instance type: ml.m5.medium
 
 
 ## Using dotenv
@@ -53,12 +53,13 @@ curl -v ******.******.us-east-1.rds.amazonaws.com:5432
 
 ## Notebook Formatting
 
-`jupyter-black` was used to format notebooks.
+`jupyter-black` was used to format notebooks and Steamlit app.
 
 ```sh
-pip install "black[jupyter]"
+pip install black "black[jupyter]"
 
 black *.ipynb
+black *.py
 ```
 
 ---
