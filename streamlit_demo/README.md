@@ -8,7 +8,7 @@ Date: 2023-06-14
 
 License: MIT
 
-## Install Required Packages
+## Install Required Packages for `app.py`
 
 ```sh
 # Required for ChromaDB with Amazon SageMaker Jumpstart
