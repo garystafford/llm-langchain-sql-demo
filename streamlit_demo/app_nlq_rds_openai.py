@@ -2,7 +2,7 @@
 # Author: Gary A. Stafford
 # Date: 2023-06-25
 # License: MIT
-# OPENAI_API_KEY=<your_key>
+# export OPENAI_API_KEY="<your_key>"
 # export SECRET_NAME="genai/rds/creds"
 # export REGION_NAME="us-east-1"
 # Usage: streamlit run app_nlq_rds_openai.py --server.runOnSave true
