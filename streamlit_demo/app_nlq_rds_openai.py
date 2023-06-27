@@ -20,7 +20,6 @@ from langchain.chains.sql_database.prompt import (PROMPT_SUFFIX,
                                                   _postgres_prompt)
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-from langchain.llms.sagemaker_endpoint import LLMContentHandler
 from langchain.prompts.example_selector.semantic_similarity import \
     SemanticSimilarityExampleSelector
 from langchain.vectorstores import Chroma
