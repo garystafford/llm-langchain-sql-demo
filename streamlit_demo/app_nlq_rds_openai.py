@@ -37,12 +37,7 @@ def main():
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
     # OpenAI API
-    parameters = {
-        "max_length": 4096,
-        "temperature": 0,
-    }
-
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, verbose=True)
+    llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.0, verbose=True)
 
     # define datasource uri
     secret = get_secret(SECRET_NAME, REGION_NAME)
