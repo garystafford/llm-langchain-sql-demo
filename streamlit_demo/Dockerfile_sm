@@ -1,0 +1,28 @@
+# Purpose: Natural Language Query (NLQ Demo) - uses SageMaker Endpoint
+# Author: Gary A. Stafford
+# Date: 2023-06-25
+# docker build -f Dockerfile_sm -t garystafford/nlq-sm:0.0.1 .
+# docker push garystafford/nlq-sm:0.0.1
+
+FROM python:3.11.4-slim
+
+RUN apt-get update && apt-get install gcc g++ git make -y && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m pip install langchain awscli boto3 \
+    python-dotenv SQLAlchemy psycopg2-binary \
+    pyyaml chromadb streamlit streamlit-chat -U
+
+RUN python3 -m pip install sentence-transformers -U --no-cache-dir
+
+# Check package versions
+RUN python3 -m pip list | grep "langchain\|sentence-transformers\|SQLAlchemy"
+
+EXPOSE 8501
+
+WORKDIR /tmp
+
+COPY sql_examples_postgresql.yaml sql_examples_postgresql.yaml
+COPY app_nlq_rds_sm.py app.py
+
+CMD ["streamlit", "run", "app.py"]
