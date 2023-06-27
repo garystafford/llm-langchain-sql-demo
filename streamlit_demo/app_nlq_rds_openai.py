@@ -133,19 +133,6 @@ def get_datastore_credentials(secret):
     return rds_uri
 
 
-class ContentHandler(LLMContentHandler):
-    content_type = "application/json"
-    accepts = "application/json"
-
-    def transform_input(self, prompt: str, model_kwargs={}) -> bytes:
-        input_str = json.dumps({"text_inputs": prompt, **model_kwargs})
-        return input_str.encode("utf-8")
-
-    def transform_output(self, output: bytes) -> str:
-        response_json = json.loads(output.read().decode("utf-8"))
-        return response_json["generated_texts"][0]
-
-
 def load_samples():
     # Use the corrected examples for few-shot prompting examples
     sql_samples = None
