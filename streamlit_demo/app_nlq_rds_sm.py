@@ -2,31 +2,34 @@
 # Author: Gary A. Stafford
 # Date: 2023-06-25
 # License: MIT
-# export ENDPOINT_NAME="jumpstart-dft-hf-text2text-flan-t5-xxl-fp16-2023-05-15"
+# Application expects the following environment variables:
+# export ENDPOINT_NAME="hf-text2text-flan-t5-xxl-fp16"
 # export REGION_NAME="us-east-1"
 # export SECRET_NAME="genai/rds/creds"
-# Usage: streamlit run app_nlq_rds_sm.py --server.runOnSave true
+# Usage: streamlit run app.py --server.runOnSave true
 
 import json
 import logging
 import os
 
 import boto3
+import streamlit as st
 import yaml
 from botocore.exceptions import ClientError
-from langchain import (FewShotPromptTemplate, PromptTemplate, SQLDatabase,
-                       SQLDatabaseChain)
-from langchain.chains.sql_database.prompt import (PROMPT_SUFFIX,
-                                                  _postgres_prompt)
+from langchain import (
+    FewShotPromptTemplate,
+    PromptTemplate,
+    SQLDatabase,
+    SQLDatabaseChain,
+)
+from langchain.chains.sql_database.prompt import PROMPT_SUFFIX, _postgres_prompt
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-from langchain.llms.sagemaker_endpoint import (LLMContentHandler,
-                                               SagemakerEndpoint)
-from langchain.prompts.example_selector.semantic_similarity import \
-    SemanticSimilarityExampleSelector
+from langchain.llms.sagemaker_endpoint import LLMContentHandler, SagemakerEndpoint
+from langchain.prompts.example_selector.semantic_similarity import (
+    SemanticSimilarityExampleSelector,
+)
 from langchain.vectorstores import Chroma
 from streamlit_chat import message
-
-import streamlit as st
 
 ENDPOINT_NAME = os.environ.get("ENDPOINT_NAME")
 REGION_NAME = os.environ.get("REGION_NAME", "us-east-1")
@@ -43,7 +46,7 @@ def main():
 
     parameters = {
         "max_length": 2048,
-        "temperature": 0,
+        "temperature": 0.0,
     }
 
     llm = SagemakerEndpoint(
@@ -55,13 +58,13 @@ def main():
 
     # define datasource uri
     secret = get_secret(SECRET_NAME, REGION_NAME)
-    rds_uri = get_datastore_credentials(secret)
+    rds_uri = get_rds_uri(secret)
     db = SQLDatabase.from_uri(rds_uri)
 
     # load examples for few-shot prompting
     examples = load_samples()
 
-    chain = load_few_shot_chain(llm, db, examples)
+    sql_db_chain = load_few_shot_chain(llm, db, examples)
 
     # Store the initial value of widgets in session state
     if "visibility" not in st.session_state:
@@ -94,16 +97,15 @@ def main():
     user_input = st.session_state["query"]
 
     if user_input:
+        st.session_state.past.append(user_input)
         try:
-            output = chain.run(query=user_input)
-            st.session_state.past.append(user_input)
+            output = sql_db_chain.run(query=user_input)
             st.session_state.generated.append(output)
             logging.info(st.session_state["query"])
             logging.info(st.session_state["generated"])
         except Exception as exc:
-            st.session_state.past.append(user_input)
             st.session_state.generated.append(
-                "I do not have enough information to answer your question."
+                "I'm sorry, I was not able to answer your question."
             )
             logging.error(exc)
 
@@ -122,11 +124,10 @@ def get_secret(secret_name, region_name):
     except ClientError as e:
         raise e
 
-    secret = json.loads(get_secret_value_response["SecretString"])
-    return secret
+    return json.loads(get_secret_value_response["SecretString"])
 
 
-def get_datastore_credentials(secret):
+def get_rds_uri(secret):
     # SQLAlchemy 2.0 reference: https://docs.sqlalchemy.org/en/20/dialects/postgresql.html
     # URI format: postgresql+psycopg2://user:pwd@hostname:port/dbname
 
@@ -136,9 +137,7 @@ def get_datastore_credentials(secret):
     rds_port = secret["port"]
     rds_db_name = secret["dbname"]
     rds_db_name = "moma"
-    rds_uri = f"postgresql+psycopg2://{rds_username}:{rds_password}@{rds_endpoint}:{rds_port}/{rds_db_name}"
-
-    return rds_uri
+    return f"postgresql+psycopg2://{rds_username}:{rds_password}@{rds_endpoint}:{rds_port}/{rds_db_name}"
 
 
 class ContentHandler(LLMContentHandler):
@@ -189,16 +188,14 @@ def load_few_shot_chain(llm, db, examples):
         input_variables=["table_info", "input", "top_k"],
     )
 
-    db_chain = SQLDatabaseChain.from_llm(
+    return SQLDatabaseChain.from_llm(
         llm,
         db,
         prompt=few_shot_prompt,
-        use_query_checker=False,
+        use_query_checker=True,
         verbose=True,
         return_intermediate_steps=False,
     )
-
-    return db_chain
 
 
 def get_text(col1):
@@ -210,6 +207,7 @@ def get_text(col1):
             placeholder="Your question here...",
             on_change=clear_text(),
         )
+        logging.info(input_text)
 
 
 def clear_text():
@@ -231,7 +229,7 @@ def build_sidebar():
         st.subheader("MoMa Collection Database")
         st.write(
             """
-        [The Museum of Modern Art Collection](https://www.moma.org/collection/) contains two tables: 'artists' and 'artworks', with 121,211 pieces of artwork and 15,086 artists.
+        [The Museum of Modern Art Collection](https://www.moma.org/collection/) contains two tables: 'artists' and 'artworks', with ~121,000 pieces of artwork and ~15,000 artists.
         """
         )
 
@@ -271,28 +269,18 @@ def build_form(col1, col2):
             st.subheader("Ask questions of your data using natural language.")
 
         with st.container():
-            # currently non-functional
-            option = st.selectbox(
-                "Choose a datasource:",
-                (
-                    "MoMA Collection (Amazon RDS for PostgreSQL)",
-                    "TICKIT Sales (Amazon Redshift)",
-                    "Classic Models (Amazon Aurora MySQL)",
-                ),
-                label_visibility=st.session_state.visibility,
-                disabled=st.session_state.disabled,
-            )
-            with st.expander("Sample questions"):
+            with st.expander("Sample questions (copy and paste)"):
                 st.text(
                     """
                 How many artists are there in the collection?
                 How many pieces of artwork are there in the collection?
+                How many paintings are in the collection?
                 How many artists are there whose nationality is French?
                 How many artworks were created by Spanish artists?
                 How many artist names start with the letter 'M'?
                 What nationality of artists created the most number of artworks?
-                How many artworks in the collection are by Claude Monet?
-                What are the 3 oldest artworks in the collection?
+                How many artworks are by the artist, 'Claude Monet'?
+                What are the 3 oldest artworks in the collection? Return the title and date.
                 """
                 )
     with col2:
