@@ -2,6 +2,7 @@
 # Author: Gary A. Stafford
 # Date: 2023-06-14
 # License: MIT
+# This version uses .env file for credentials vs. AWS Secrets Manager
 # Usage: streamlit run app.py --server.runOnSave true
 
 import os
