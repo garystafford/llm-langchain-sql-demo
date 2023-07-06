@@ -1,11 +1,12 @@
-# Natural Language Query Demo of Amazon RDS for PostgreSQL using OpenAI
+# Natural Language Query Demo of Amazon RDS for PostgreSQL using SageMaker FM Endpoint
 # Author: Gary A. Stafford
 # Date: 2023-06-25
 # License: MIT
-# export OPENAI_API_KEY="<your_key>"
-# export SECRET_NAME="genai/rds/creds"
+# Application expects the following environment variables:
+# OPENAI_API_KEY=<your_key>
 # export REGION_NAME="us-east-1"
-# Usage: streamlit run app_nlq_rds_openai.py --server.runOnSave true
+# export SECRET_NAME="genai/rds/creds"
+# Usage: streamlit run app.py --server.runOnSave true
 
 import json
 import logging
@@ -20,6 +21,7 @@ from langchain.chains.sql_database.prompt import (PROMPT_SUFFIX,
                                                   _postgres_prompt)
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+from langchain.llms import OpenAI
 from langchain.prompts.example_selector.semantic_similarity import \
     SemanticSimilarityExampleSelector
 from langchain.vectorstores import Chroma
@@ -27,8 +29,8 @@ from streamlit_chat import message
 
 import streamlit as st
 
-SECRET_NAME = os.environ.get("SECRET_NAME")
 REGION_NAME = os.environ.get("REGION_NAME", "us-east-1")
+SECRET_NAME = os.environ.get("SECRET_NAME")
 
 
 def main():
@@ -36,18 +38,18 @@ def main():
 
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-    # OpenAI API
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.0, verbose=True)
+    llm = OpenAI(model_name="text-davinci-003", temperature=0, verbose=True)
+    # llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, verbose=True)
 
     # define datasource uri
     secret = get_secret(SECRET_NAME, REGION_NAME)
-    rds_uri = get_datastore_credentials(secret)
+    rds_uri = get_rds_uri(secret)
     db = SQLDatabase.from_uri(rds_uri)
 
     # load examples for few-shot prompting
     examples = load_samples()
 
-    chain = load_few_shot_chain(llm, db, examples)
+    sql_db_chain = load_few_shot_chain(llm, db, examples)
 
     # Store the initial value of widgets in session state
     if "visibility" not in st.session_state:
@@ -80,16 +82,15 @@ def main():
     user_input = st.session_state["query"]
 
     if user_input:
+        st.session_state.past.append(user_input)
         try:
-            output = chain.run(query=user_input)
-            st.session_state.past.append(user_input)
+            output = sql_db_chain.run(query=user_input)
             st.session_state.generated.append(output)
             logging.info(st.session_state["query"])
             logging.info(st.session_state["generated"])
         except Exception as exc:
-            st.session_state.past.append(user_input)
             st.session_state.generated.append(
-                "I do not have enough information to answer your question."
+                "I'm sorry, I was not able to answer your question."
             )
             logging.error(exc)
 
@@ -108,11 +109,10 @@ def get_secret(secret_name, region_name):
     except ClientError as e:
         raise e
 
-    secret = json.loads(get_secret_value_response["SecretString"])
-    return secret
+    return json.loads(get_secret_value_response["SecretString"])
 
 
-def get_datastore_credentials(secret):
+def get_rds_uri(secret):
     # SQLAlchemy 2.0 reference: https://docs.sqlalchemy.org/en/20/dialects/postgresql.html
     # URI format: postgresql+psycopg2://user:pwd@hostname:port/dbname
 
@@ -122,9 +122,7 @@ def get_datastore_credentials(secret):
     rds_port = secret["port"]
     rds_db_name = secret["dbname"]
     rds_db_name = "moma"
-    rds_uri = f"postgresql+psycopg2://{rds_username}:{rds_password}@{rds_endpoint}:{rds_port}/{rds_db_name}"
-
-    return rds_uri
+    return f"postgresql+psycopg2://{rds_username}:{rds_password}@{rds_endpoint}:{rds_port}/{rds_db_name}"
 
 
 def load_samples():
@@ -162,16 +160,14 @@ def load_few_shot_chain(llm, db, examples):
         input_variables=["table_info", "input", "top_k"],
     )
 
-    db_chain = SQLDatabaseChain.from_llm(
+    return SQLDatabaseChain.from_llm(
         llm,
         db,
         prompt=few_shot_prompt,
-        use_query_checker=False,
+        use_query_checker=True,
         verbose=True,
         return_intermediate_steps=False,
     )
-
-    return db_chain
 
 
 def get_text(col1):
@@ -183,6 +179,7 @@ def get_text(col1):
             placeholder="Your question here...",
             on_change=clear_text(),
         )
+        logging.info(input_text)
 
 
 def clear_text():
@@ -204,7 +201,7 @@ def build_sidebar():
         st.subheader("MoMa Collection Database")
         st.write(
             """
-        [The Museum of Modern Art Collection](https://www.moma.org/collection/) contains two tables: 'artists' and 'artworks', with 121,211 pieces of artwork and 15,086 artists.
+        [The Museum of Modern Art Collection](https://www.moma.org/collection/) contains two tables: 'artists' and 'artworks', with ~121,000 pieces of artwork and ~15,000 artists.
         """
         )
 
@@ -244,28 +241,22 @@ def build_form(col1, col2):
             st.subheader("Ask questions of your data using natural language.")
 
         with st.container():
-            # currently non-functional
-            option = st.selectbox(
-                "Choose a datasource:",
-                (
-                    "MoMA Collection (Amazon RDS for PostgreSQL)",
-                    "TICKIT Sales (Amazon Redshift)",
-                    "Classic Models (Amazon Aurora MySQL)",
-                ),
-                label_visibility=st.session_state.visibility,
-                disabled=st.session_state.disabled,
-            )
-            with st.expander("Sample questions"):
+            with st.expander("Sample questions (copy and paste)"):
                 st.text(
                     """
                 How many artists are there in the collection?
                 How many pieces of artwork are there in the collection?
+                How many paintings are in the collection?
                 How many artists are there whose nationality is French?
                 How many artworks were created by Spanish artists?
                 How many artist names start with the letter 'M'?
-                What nationality of artists created the most number of artworks?
-                How many artworks in the collection are by Claude Monet?
-                What are the 3 oldest artworks in the collection?
+                Who is the most prolific artist in the collection? What is their nationality?
+                What nationality of artists created the most artworks in the collection?
+                What is the ratio of male to female artists? Return as ratio of n:1.
+                How many artworks are by the artist, Claude Monet?
+                What are the five oldest artworks in the collection? Return the title and date for each.
+                For artist Frida Kahlo, return the title and medium of each artwork in a numbered list.
+                Give me a recipe for chocolate cake.
                 """
                 )
     with col2:
