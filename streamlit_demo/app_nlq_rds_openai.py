@@ -3,7 +3,6 @@
 # Date: 2023-06-25
 # License: MIT
 # Application expects the following environment variables:
-# OPENAI_API_KEY=<your_key>
 # export REGION_NAME="us-east-1"
 # export SECRET_NAME="genai/rds/creds"
 # Usage: streamlit run app.py --server.runOnSave true
@@ -96,8 +95,19 @@ def main():
 
     if st.session_state["generated"]:
         for i in range(len(st.session_state["generated"]) - 1, -1, -1):
-            message(st.session_state["generated"][i], key=str(i))
-            message(st.session_state["past"][i], is_user=True, key=str(i) + "_user")
+            message(st.session_state["generated"][i],
+                    key=str(i),
+                    is_user=False,
+                    avatar_style="icons",
+                    seed="459"
+                   )
+            message(
+                st.session_state["past"][i],
+                is_user=True, 
+                key=str(i) + "_user",
+                avatar_style="icons",
+                seed="158"
+            )
 
 
 def get_secret(secret_name, region_name):
